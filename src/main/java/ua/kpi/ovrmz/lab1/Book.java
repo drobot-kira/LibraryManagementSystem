@@ -19,6 +19,15 @@ public class Book {
         this.status = Const.BOOK_STATUS_AVAILABLE;
     }
 
+    public Book(int id, String isbn, String title, String author, int borrowCount, String status) {
+        this.id = id;
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.borrowCount = borrowCount;
+        this.status = status;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -81,7 +90,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return getInfo();
+        return id + "\n" + isbn + '\n' + title + '\n' + author + '\n' + borrowCount + '\n' + status + '\n';
     }
 
     @Override

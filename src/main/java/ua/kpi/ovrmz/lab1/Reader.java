@@ -18,6 +18,14 @@ public class Reader {
         borrowedBooks = new ArrayList<>();
     }
 
+    public Reader(int id, String name, int maxNumberOfBooksToBorrow, int numberOfReadBooks, ArrayList<Book> borrowedBooks) {
+        this.id = id;
+        this.name = name;
+        this.maxNumberOfBooksToBorrow = maxNumberOfBooksToBorrow;
+        this.numberOfReadBooks = numberOfReadBooks;
+        this.borrowedBooks = borrowedBooks;
+    }
+
     public int getId() {
         return id;
     }
@@ -92,7 +100,11 @@ public class Reader {
 
     @Override
     public String toString() {
-        return getInfo();
+        String result = id + "\n" + name + '\n' + maxNumberOfBooksToBorrow + '\n' + numberOfReadBooks + '\n';
+        for (Book book : borrowedBooks) {
+            result += book.getId() + "\n";
+        }
+        return result;
     }
 
     @Override

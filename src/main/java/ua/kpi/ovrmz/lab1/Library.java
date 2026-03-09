@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Library {
+    private final HashMap<String, ArrayList<Book>> books;
+    private final HashMap<Integer, Reader> readers;
     private String name;
     private String currentLibrarianName;
     private String openingHours;
-    private final HashMap<String, ArrayList<Book>> books;
-    private final HashMap<Integer, Reader> readers;
 
     public Library(String name, String currentLibrarianName, String openingHours) {
         this.name = name;
@@ -42,6 +42,20 @@ public class Library {
 
     public void setOpeningHours(String openingHours) {
         this.openingHours = openingHours;
+    }
+
+    public ArrayList<Book> getBooks() {
+        ArrayList<Book> booksList = new ArrayList<>();
+        for (ArrayList<Book> list : books.values()) {
+            booksList.addAll(list);
+        }
+        return booksList;
+    }
+
+    public ArrayList<Reader> getReaders() {
+        ArrayList<Reader> readersList = new ArrayList<>();
+        readersList.addAll(readers.values());
+        return readersList;
     }
 
     public void addReader(Reader reader) {
@@ -108,7 +122,7 @@ public class Library {
         return result.getInfo();
     }
 
-    public boolean UpdateReader(int id, String newName) {
+    public boolean updateReader(int id, String newName) {
         if (!readers.containsKey(id)) {
             return false;
         }
@@ -117,7 +131,7 @@ public class Library {
         return true;
     }
 
-    public boolean UpdateBook(String isbn, int id, String newTitle, String newAuthor) {
+    public boolean updateBook(String isbn, int id, String newTitle, String newAuthor) {
         if (!books.containsKey(isbn)) {
             return false;
         }
@@ -160,9 +174,41 @@ public class Library {
         }
     }
 
+    public boolean borrowBook(int readerId, String isbn, int bookId) {
+        if (!readers.containsKey(readerId) || !books.containsKey(isbn)) {
+            return false;
+        }
+        for (Book book : books.get(isbn)) {
+            if (book.getId() == bookId) {
+                try {
+                    return readers.get(readerId).borrowBook(book);
+                } catch (IllegalArgumentException e) {
+                    throw e;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean returnBook(int readerId, String isbn, int bookId) {
+        if (!readers.containsKey(readerId) || !books.containsKey(isbn)) {
+            return false;
+        }
+        for (Book book : books.get(isbn)) {
+            if (book.getId() == bookId) {
+                try {
+                    return readers.get(readerId).returnBook(book);
+                } catch (IllegalStateException e){
+                    throw e;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
-        return "Library{" + "name='" + name + '\'' + ", currentLibrarianName='" + currentLibrarianName + '\'' + ", openingHours='" + openingHours + '\'' + ", books=" + books + ", readers=" + readers + '}';
+        return name + '\n' + currentLibrarianName + '\n' + openingHours + '\n';
     }
 
     @Override

@@ -127,7 +127,7 @@ class LibraryTest {
         Reader mockReader = Mockito.mock(Reader.class);
         getReadersViaReflection(library).put(1, mockReader);
 
-        boolean result = library.UpdateReader(1, "newReaderName");
+        boolean result = library.updateReader(1, "newReaderName");
 
         assertTrue(result);
         Mockito.verify(mockReader).setName("newReaderName");
@@ -138,7 +138,7 @@ class LibraryTest {
     void updateReader_WhenNotExists_ShouldReturnFalse() {
         Library library = new Library("libraryName", "librarianName", "hours");
 
-        boolean result = library.UpdateReader(1, "newReaderName");
+        boolean result = library.updateReader(1, "newReaderName");
 
         assertFalse(result);
     }
@@ -153,7 +153,7 @@ class LibraryTest {
         list.add(mockBook);
         getBooksViaReflection(library).put("isbn1", list);
 
-        boolean result = library.UpdateBook("isbn1", 1, "newTitle", "newAuthor");
+        boolean result = library.updateBook("isbn1", 1, "newTitle", "newAuthor");
 
         assertTrue(result);
         Mockito.verify(mockBook).setTitle("newTitle");
@@ -165,7 +165,7 @@ class LibraryTest {
     void updateBook_WhenIsbnNotExists_ShouldReturnFalse() {
         Library library = new Library("libraryName", "librarianName", "hours");
 
-        boolean result = library.UpdateBook("isbn1", 1, "newTitle", "newAuthor");
+        boolean result = library.updateBook("isbn1", 1, "newTitle", "newAuthor");
 
         assertFalse(result);
     }
@@ -243,5 +243,189 @@ class LibraryTest {
         getBooksViaReflection(library).put("isbn1", list);
 
         assertEquals("bookInfo\n\n", library.getAllBooksInfo());
+    }
+
+    @Test
+    @DisplayName("borrowBook: returns false when reader not found")
+    void borrowBook_WhenReaderNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        getBooksViaReflection(library).put("isbn1", new ArrayList<>());
+
+        boolean result = library.borrowBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("borrowBook: returns false when ISBN not found")
+    void borrowBook_WhenIsbnNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+
+        boolean result = library.borrowBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("borrowBook: returns false when book ID not found")
+    void borrowBook_WhenBookIdNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(2);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+
+        boolean result = library.borrowBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("borrowBook: returns true on success")
+    void borrowBook_WhenSuccess_ShouldReturnTrue() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.borrowBook(mockBook)).thenReturn(true);
+
+        boolean result = library.borrowBook(1, "isbn1", 1);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("borrowBook: returns false when reader rejects")
+    void borrowBook_WhenReaderRejects_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.borrowBook(mockBook)).thenReturn(false);
+
+        boolean result = library.borrowBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("borrowBook: propagates exception")
+    void borrowBook_WhenExceptionThrown_ShouldPropagate() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.borrowBook(mockBook)).thenThrow(new IllegalArgumentException());
+
+        assertThrows(IllegalArgumentException.class, () -> library.borrowBook(1, "isbn1", 1));
+    }
+
+    @Test
+    @DisplayName("returnBook: returns false when reader not found")
+    void returnBook_WhenReaderNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        getBooksViaReflection(library).put("isbn1", new ArrayList<>());
+
+        boolean result = library.returnBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("returnBook: returns false when ISBN not found")
+    void returnBook_WhenIsbnNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+
+        boolean result = library.returnBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("returnBook: returns false when book ID not found")
+    void returnBook_WhenBookIdNotFound_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(2);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+
+        boolean result = library.returnBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("returnBook: returns true on success")
+    void returnBook_WhenSuccess_ShouldReturnTrue() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.returnBook(mockBook)).thenReturn(true);
+
+        boolean result = library.returnBook(1, "isbn1", 1);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("returnBook: returns false when reader rejects")
+    void returnBook_WhenReaderRejects_ShouldReturnFalse() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.returnBook(mockBook)).thenReturn(false);
+
+        boolean result = library.returnBook(1, "isbn1", 1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("returnBook: propagates exception")
+    void returnBook_WhenExceptionThrown_ShouldPropagate() throws Exception {
+        Library library = new Library("libraryName", "librarianName", "hours");
+        Reader mockReader = Mockito.mock(Reader.class);
+        getReadersViaReflection(library).put(1, mockReader);
+        Book mockBook = Mockito.mock(Book.class);
+        Mockito.when(mockBook.getId()).thenReturn(1);
+        ArrayList<Book> list = new ArrayList<>();
+        list.add(mockBook);
+        getBooksViaReflection(library).put("isbn1", list);
+        Mockito.when(mockReader.returnBook(mockBook)).thenThrow(new IllegalStateException());
+
+        assertThrows(IllegalStateException.class, () -> library.returnBook(1, "isbn1", 1));
     }
 }
