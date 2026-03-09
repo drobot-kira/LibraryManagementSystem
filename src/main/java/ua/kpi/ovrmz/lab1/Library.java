@@ -9,8 +9,8 @@ public class Library {
     private String name;
     private String currentLibrarianName;
     private String openingHours;
-    private HashMap<String, ArrayList<Book>> books;
-    private HashMap<Integer, Reader> readers;
+    private final HashMap<String, ArrayList<Book>> books;
+    private final HashMap<Integer, Reader> readers;
 
     public Library(String name, String currentLibrarianName, String openingHours) {
         this.name = name;
@@ -20,28 +20,28 @@ public class Library {
         readers = new HashMap<>();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCurrentLibrarianName(String currentLibrarianName) {
-        this.currentLibrarianName = currentLibrarianName;
-    }
-
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCurrentLibrarianName() {
         return currentLibrarianName;
     }
 
+    public void setCurrentLibrarianName(String currentLibrarianName) {
+        this.currentLibrarianName = currentLibrarianName;
+    }
+
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 
     public void addReader(Reader reader) {
@@ -49,7 +49,7 @@ public class Library {
     }
 
     public void addBook(Book book) {
-        if (!books.containsKey(book.getIsbn())){
+        if (!books.containsKey(book.getIsbn())) {
             ArrayList<Book> bookList = new ArrayList<>();
             bookList.add(book);
             books.put(book.getIsbn(), bookList);
@@ -59,14 +59,12 @@ public class Library {
         books.get(book.getIsbn()).add(book);
     }
 
-    public String getInfo()
-    {
+    public String getInfo() {
         String result = name + "\nCurrent librarian: " + currentLibrarianName + "\nOpening hours:\n" + openingHours;
         return result;
     }
 
-    public String getAllReadersInfo()
-    {
+    public String getAllReadersInfo() {
         String result = "";
         for (Map.Entry<Integer, Reader> entry : readers.entrySet()) {
             result += entry.getValue().getInfo() + "\n\n";
@@ -75,8 +73,7 @@ public class Library {
         return result;
     }
 
-    public String getReaderInfo(int readerId)
-    {
+    public String getReaderInfo(int readerId) {
         if (!readers.containsKey(readerId)) {
             return "No reader found with id " + readerId;
         }
@@ -84,7 +81,7 @@ public class Library {
         return readers.get(readerId).getInfo();
     }
 
-    public String getAllBooksInfo(){
+    public String getAllBooksInfo() {
         String result = "";
         for (Map.Entry<String, ArrayList<Book>> entry : books.entrySet()) {
             for (Book book : entry.getValue()) {
@@ -95,8 +92,7 @@ public class Library {
         return result;
     }
 
-    public String getBookInfo(String isbn)
-    {
+    public String getBookInfo(String isbn) {
         if (!books.containsKey(isbn)) {
             return "No book found with ISBN " + isbn;
         }
@@ -112,8 +108,7 @@ public class Library {
         return result.getInfo();
     }
 
-    public boolean UpdateReader(int id, String newName)
-    {
+    public boolean UpdateReader(int id, String newName) {
         if (!readers.containsKey(id)) {
             return false;
         }
@@ -122,7 +117,7 @@ public class Library {
         return true;
     }
 
-    public boolean UpdateBook(String isbn, int id, String newTitle, String newAuthor){
+    public boolean UpdateBook(String isbn, int id, String newTitle, String newAuthor) {
         if (!books.containsKey(isbn)) {
             return false;
         }
@@ -138,20 +133,18 @@ public class Library {
         return false;
     }
 
-    public void deleteReader(int readerId)
-    {
+    public void deleteReader(int readerId) {
         if (!readers.containsKey(readerId)) {
             return;
         }
-        if (readers.get(readerId).hasBorrowedBooks()){
+        if (readers.get(readerId).hasBorrowedBooks()) {
             throw new IllegalStateException("Reader has borrowed books");
         }
 
         readers.remove(readerId);
     }
 
-    public void deleteBook(String isbn, int id)
-    {
+    public void deleteBook(String isbn, int id) {
         if (!books.containsKey(isbn)) {
             return;
         }
@@ -169,13 +162,7 @@ public class Library {
 
     @Override
     public String toString() {
-        return "Library{" +
-                "name='" + name + '\'' +
-                ", currentLibrarianName='" + currentLibrarianName + '\'' +
-                ", openingHours='" + openingHours + '\'' +
-                ", books=" + books +
-                ", readers=" + readers +
-                '}';
+        return "Library{" + "name='" + name + '\'' + ", currentLibrarianName='" + currentLibrarianName + '\'' + ", openingHours='" + openingHours + '\'' + ", books=" + books + ", readers=" + readers + '}';
     }
 
     @Override

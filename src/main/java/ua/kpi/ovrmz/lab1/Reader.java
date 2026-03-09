@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class Reader {
     private final int id;
+    private final ArrayList<Book> borrowedBooks;
     private String name;
     private int maxNumberOfBooksToBorrow;
     private int numberOfReadBooks;
-    private final ArrayList<Book> borrowedBooks;
 
     public Reader(int id, String name) {
         this.id = id;
@@ -81,7 +81,7 @@ public class Reader {
     }
 
     public String getInfo() {
-        String result = id + "\n" + name + "\nmaximum number of books to borrow: " + maxNumberOfBooksToBorrow + "\nbooks read: " + numberOfReadBooks + "\nBorrowed books: ";
+        String result = id + "\n" + name + "\nmaximum number of books to borrow: " + maxNumberOfBooksToBorrow + "\nbooks read: " + numberOfReadBooks + "\nBorrowed books:\n";
 
         for (Book book : borrowedBooks) {
             result += book.getInfo() + "\n";
