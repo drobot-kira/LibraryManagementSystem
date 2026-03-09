@@ -46,10 +46,10 @@ public class DataManager {
     public static Library importLibrary(String libraryFilePath, String readersFilePath, String booksFilePath){
         String libraryName, currentLibrarianName, openingHours;
 
-        try (BufferedReader reader = Files.newBufferedReader(Paths.get(libraryFilePath))){
-            libraryName = reader.readLine().trim();
-            currentLibrarianName = reader.readLine().trim();
-            openingHours = reader.readLine().trim();
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(libraryFilePath))){
+            libraryName = reader.readLine().strip();
+            currentLibrarianName = reader.readLine().strip();
+            openingHours = reader.readLine().strip();
         } catch (Exception e) {
             return null;
         }
@@ -61,18 +61,18 @@ public class DataManager {
         try (BufferedReader reader = Files.newBufferedReader(Path.of(booksFilePath))) {
             String line = "";
             while (line != null){
-                line = reader.readLine().trim();
+                line = reader.readLine().strip();
                 if (line.equals("*")){
                     break;
                 }
                 int id = Integer.parseInt(line);
-                String isbn = reader.readLine().trim();
-                String title = reader.readLine().trim();
-                String author = reader.readLine().trim();
-                int borrowCount = Integer.parseInt(reader.readLine().trim());
-                String status = reader.readLine().trim();
+                String isbn = reader.readLine().strip();
+                String title = reader.readLine().strip();
+                String author = reader.readLine().strip();
+                int borrowCount = Integer.parseInt(reader.readLine().strip());
+                String status = reader.readLine().strip();
                 books.add(new Book(id, isbn, title, author, borrowCount, status));
-                line = reader.readLine().trim();
+                line = reader.readLine().strip();
             }
         } catch (Exception e) {
             return null;
@@ -87,17 +87,17 @@ public class DataManager {
         try (BufferedReader fileReader = Files.newBufferedReader(Path.of(readersFilePath))){
             String line = " ";
             while (line != null){
-                line = fileReader.readLine().trim();
+                line = fileReader.readLine().strip();
                 if (line.equals("*")){
                     break;
                 }
                 int id = Integer.parseInt(line);
-                String name = fileReader.readLine().trim();
-                int maxNumberOfReadBooks = Integer.parseInt(fileReader.readLine().trim());
-                int numberOfReadBooks = Integer.parseInt(fileReader.readLine().trim());
+                String name = fileReader.readLine().strip();
+                int maxNumberOfReadBooks = Integer.parseInt(fileReader.readLine().strip());
+                int numberOfReadBooks = Integer.parseInt(fileReader.readLine().strip());
                 ArrayList<Book> borrowedBooks = new ArrayList<>();
                 Reader reader = new Reader(id, name, maxNumberOfReadBooks, numberOfReadBooks, borrowedBooks);
-                line = fileReader.readLine().trim();
+                line = fileReader.readLine().strip();
                 while (!line.equals("")){
                     int idBook = Integer.parseInt(line);
                     for (Book book : books) {
@@ -106,7 +106,7 @@ public class DataManager {
                             break;
                         }
                     }
-                    line = fileReader.readLine().trim();
+                    line = fileReader.readLine().strip();
                 }
                 readers.add(reader);
             }

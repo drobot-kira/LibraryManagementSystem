@@ -77,7 +77,7 @@ public class Reader {
         if (bookCanBeReturned) {
             borrowedBooks.remove(book);
             numberOfReadBooks++;
-            maxNumberOfBooksToBorrow = Const.STANDARD_MAX_NUMBER_OF_BOOKS_TO_BORROW + numberOfReadBooks % 10;
+            maxNumberOfBooksToBorrow = Const.STANDARD_MAX_NUMBER_OF_BOOKS_TO_BORROW + numberOfReadBooks / 10;
             return true;
         }
 

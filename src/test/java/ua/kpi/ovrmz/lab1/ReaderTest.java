@@ -95,7 +95,7 @@ class ReaderTest {
         assertFalse(borrowedBooks.contains(mockBook));
 
         assertEquals(1, reader.getNumberOfReadBooks());
-        assertEquals(Const.STANDARD_MAX_NUMBER_OF_BOOKS_TO_BORROW + 1, reader.getMaxNumberOfBooksToBorrow());
+        assertEquals(Const.STANDARD_MAX_NUMBER_OF_BOOKS_TO_BORROW, reader.getMaxNumberOfBooksToBorrow());
     }
 
     @Test
